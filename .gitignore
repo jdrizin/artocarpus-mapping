@@ -1,0 +1,13 @@
+.Rproj.user
+.Rhistory
+.RData
+data/
+*.log
+*.pdf
+*.r~
+.Rproj.user
+*.Rproj
+.Rhistory
+.~lock*
+.Rdata
+
