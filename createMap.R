@@ -5,6 +5,7 @@
 # ggmap - mapping
 # maptools - might need it. provides conversions for geospatial data
 # raster - google suggests it could be useful?
+# rgdal - working with shapefiles?
 
 library(maps)
 library(ggmap) # loads ggplot2
