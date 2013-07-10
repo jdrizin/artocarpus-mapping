@@ -4,7 +4,7 @@
 library(ggmap)
 
 #### load data ####
-arto <- read.csv("data.csv", as.is=T)
+arto <- read.csv("data/jarrett.csv", as.is=T)
 arto$index <- 1:1628
 
 #deal with some of the smaller islands. some of this will be done by hand on the file directly
@@ -40,3 +40,18 @@ distMap <- get_map(location=c(lon=mapCenter$lon, lat=mapCenter$lat), zoom=mapSiz
 printMap <- ggmap(distMap) +
 	geom_point(data=arto, aes(x=LOClongitude, y=LOClatitude, colour=series)) # might be nice to add some cities too
 printMap # i guess the default method is to print a plot.
+
+#### let's try a somewhat more clever approach to geocoding ####
+# just countries
+dummyvec <- rep(0, length(arto$index) ) #make a dummy vector
+arto$countryLat <- dummyvec             #add it as latlongs
+arto$countryLon <- dummyvec
+countries <- unique(sort(arto$Country)) #looks like we have 20 countries
+countryLocs <- data.frame(countries, lat=rep(0,20), lon=rep(0,20), stringsAsFactors=F) #fill out an empty data frame
+
+for(i in 1:length(countries)){
+	loc <- geocode(countryLocs$countries[i]) 
+	countryLocs$lat[i] <- loc$lat
+	countryLocs$lon[i] <- loc$lon
+}
+
