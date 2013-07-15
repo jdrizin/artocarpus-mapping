@@ -91,3 +91,16 @@ arto <- merge(arto, countryLocs, by.x="Country", by.y="countries")
 
 #all merged. let's write the data to a new file
 write.csv(arto, file="data/jarret-country.csv")
+
+#### locality attempts ####
+arto <- read.csv("data/jarret-country.csv")
+# download your data from the following url
+# http://download.geonames.org/export/dump/
+# I unzipped MY.zip into data/
+# the data doesn't include a header. see the readme.txt for more details about the data
+MY <- read.delim(file="data/MY.txt", sep='\t', header=F, stringsAsFactors=F)
+names(MY) <- c("geonameid","name","asciiname","alternatenames","latitude","longitude","feature_class","feature_code","country_code","cc2","admin1_code","admin2_code","admin3_code","admin4_code","population","elevation","dem","timezone","modification")
+
+
+
+
