@@ -101,6 +101,21 @@ arto <- read.csv("data/jarret-country.csv")
 MY <- read.delim(file="data/MY.txt", sep='\t', header=F, stringsAsFactors=F)
 names(MY) <- c("geonameid","name","asciiname","alternatenames","latitude","longitude","feature_class","feature_code","country_code","cc2","admin1_code","admin2_code","admin3_code","admin4_code","population","elevation","dem","timezone","modification")
 
+# i'm going to be matching on certain patterns, so we're going to do some fuzzy matching and hope for the best
+# so we'll create word[1].+word[2]
+MY$matchname <- gsub(" ", ".+", MY$name)
 
+artoLength <- length(arto$X)
+dummyvec <- rep(NA, artoLength)
+arto$localeLat <- dummyvec
+arto$localeLon <- dummyvec
 
-
+for(i in 1:length(MY$name)){
+	matches <- agrep(MY$matchname[i], arto$LOCALITY)
+	for(j in 1:length(matches)){
+		eval(parse(text=paste("arto$localeLat[" , matches[j], "] <- MY$latitude[i]", sep="")))
+		eval(parse(text=paste("arto$localeLon[" , matches[j], "] <- MY$longitude[i]", sep="")))
+		print(j)
+	}
+	print(i)
+}
