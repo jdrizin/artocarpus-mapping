@@ -93,7 +93,9 @@ arto <- merge(arto, countryLocs, by.x="Country", by.y="countries")
 write.csv(arto, file="data/jarret-country.csv")
 
 #### locality attempts ####
-arto <- read.csv("data/jarret-country.csv")
+arto <- read.csv("data/jarret-country.csv", stringsAsFactors=F)
+arto$LOCALITY[arto$LOCALITY==""] <- NA
+
 # download your data from the following url
 # http://download.geonames.org/export/dump/
 # I unzipped MY.zip into data/
@@ -105,17 +107,17 @@ names(MY) <- c("geonameid","name","asciiname","alternatenames","latitude","longi
 # so we'll create word[1].+word[2]
 MY$matchname <- gsub(" ", ".+", MY$name)
 
+library(geonames)
+
 artoLength <- length(arto$X)
 dummyvec <- rep(NA, artoLength)
 arto$localeLat <- dummyvec
 arto$localeLon <- dummyvec
 
-for(i in 1:length(MY$name)){
-	matches <- agrep(MY$matchname[i], arto$LOCALITY)
-	for(j in 1:length(matches)){
-		eval(parse(text=paste("arto$localeLat[" , matches[j], "] <- MY$latitude[i]", sep="")))
-		eval(parse(text=paste("arto$localeLon[" , matches[j], "] <- MY$longitude[i]", sep="")))
-		print(j)
-	}
-	print(i)
+#i think something funny goes on with this function and NAs. strip them out
+artoTrim <- arto[complete.cases(arto$LOCALITY),]
+
+for(i in 1:artoLength){
+	GNsearch(name=arto$LOCALITY[i], )
 }
+
