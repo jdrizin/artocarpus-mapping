@@ -117,7 +117,28 @@ arto$localeLon <- dummyvec
 #i think something funny goes on with this function and NAs. strip them out
 artoTrim <- arto[complete.cases(arto$LOCALITY),]
 
-for(i in 1:artoLength){
-	GNsearch(name=arto$LOCALITY[i], )
+#what I need to do is assign modern countries and chop down dataframes to make this faster
+#otherwise my ugly loop will take days to run
+oldcountries <- unique(sort(arto$Country))
+country <- data.frame(old=oldcountries, new=oldcountries, stringsAsFactors=F) #dummy
+
+#add country codes
+country$new[c(1,7, 15)] <- "IN" #andaman and nicobar are indian too
+country$new[c(2,4, 9, 10, 13, 14,20)] <- "ID" #most of borneo is indonesia, and celebes, java, sundra, moluccas, new guinea, sumatra
+country$new[19] <- "SB" #solomon islands
+country$new[18] <- "TH" #siam is thailand now
+country$new[c(16,17)] <- "PH" #phillippines
+country$new[c(3, 11)] <- "MM" #burma is now myanmar
+country$new[12] <- "MY" #i guess malaya is malaysia?
+country$new[5] <- "LK" #ceylon is sri lanka
+country$new[6] <- "CN"
+country$new[4] <- "ID"
+#i know i missed indochina. i don't know what to do about it.
+
+#now smoosh them together
+artoTrim <- merge(artoTrim, country, by.x="Country", by.y="old")
+
+for(i in 1:length(artoTrim$new)){
+	GNsearch(name=artoTrim$LOCALITY[i], country=artoTrim$new[i])
 }
 
