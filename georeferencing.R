@@ -6,14 +6,9 @@ library(ggmap)
 #### load data ####
 arto <- read.csv("data/jarrett.csv", as.is=T)
 arto$index <- 1:1628
-
-#deal with some of the smaller islands. some of this will be done by hand on the file directly
-#especially those with few records.
-
 arto <- arto[arto$Country != "Cultivated", ] # remove the cultivated records
 
 #### try to geocode more specific stuff.####
-
 looplen  <- length(arto$LOCALITY) # this is about 1600. you have 2500 from google
 dummyvec <- rep(0, looplen)
 
