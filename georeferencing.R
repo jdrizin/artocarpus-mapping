@@ -12,7 +12,7 @@ arto$index <- 1:1628
 
 arto <- arto[arto$Country != "Cultivated", ] # remove the cultivated records
 
-#### try to geocode ####
+#### try to geocode more specific stuff.####
 
 looplen  <- length(arto$LOCALITY) # this is about 1600. you have 2500 from google
 dummyvec <- rep(0, looplen)
@@ -21,7 +21,7 @@ arto$LOClatitude  <- dummyvec # populate the df
 arto$LOClongitude <- dummyvec
 
 for(i in 1:looplen) {
-	loc <- arto$LOCALITY[i]
+	loc <- paste(arto$more.specific[i], arto$Country[i])
 	geoloc <- geocode(loc)
 	arto$LOClongitude[i] <- geoloc$lon
 	arto$LOClatitude[i]  <- geoloc$lat
@@ -53,23 +53,6 @@ for(i in 1:length(countries)){
 	countryLocs$lon[i] <- loc$lon
 }
 
-#there are some weird points around
-
-loc <- geocode("thailand") #listed as siam, but seemed to be somewhere weird 
-countryLocs$lat[18] <- loc$lat
-countryLocs$lon[18] <- loc$lon
-
-loc <- geocode("java, indonesia") #listed as java, but seemed to be somewhere weird 
-countryLocs$lat[9] <- loc$lat
-countryLocs$lon[9] <- loc$lon
-
-loc <- geocode("philippines") #philippine islands doesn't work. oooooook.
-countryLocs$lat[16] <- loc$lat
-countryLocs$lon[16] <- loc$lon
-
-loc <- geocode("peninsular malaysia") #and i had to decide where malaya means.
-countryLocs$lat[12] <- loc$lat
-countryLocs$lon[12] <- loc$lon
 
 ##### build test map: how did it do? #####
 mapCenter <- geocode("Sandakan, Malaysia") # this is about right
