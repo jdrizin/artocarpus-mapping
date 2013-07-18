@@ -137,3 +137,9 @@ countries <- over(pointSP, w)
 countries <- with(countries, data.frame(sovereignt, admin, name_long, continent))
 artoLocs <- data.frame(artoLocs, countries)
 #ok, now we should look for weird stuff!
+weird <- artoLocs[artoLocs$continent %in% c("Europe", "North America"),]
+library(maps)
+world <- map_data("world")
+weirdmap <- ggplot() +
+   geom_polygon( data=world, aes(x=long, y=lat, group=group)) +
+   geom_point (data=weird, aes(x=LOClongitude, y=LOClatitude, colour="red"))
