@@ -122,3 +122,26 @@ for(i in 1:length(artoTrim$new)){
 	GNsearch(name=artoTrim$LOCALITY[i], country=artoTrim$new[i])
 }
 
+#### figure out if it's in the right country ####
+#code snagged from https://stat.ethz.ch/pipermail/r-sig-geo/2010-December/010354.html
+library(rgdal) #needs gdal-dev and libproj-dev
+setwd(tempdir())
+download.file("http://www.naturalearthdata.com/http//www.naturalearthdata.com/download/110m/cultural/ne_110m_admin_0_countries.zip",destfile = "temp")
+unzip(zipfile = "temp")
+w <- readOGR(tempdir(), 'ne_110m_admin_0_countries')
+
+locs <- data.frame(arto$LOClongitude, arto$LOClatitude)
+locs <- locs[complete.cases(locs),]
+artoLocs <- arto[complete.cases(arto$LOClongitude),]
+pointSP <- SpatialPointsDataFrame(coords=locs, data=artoLocs, proj4string=CRS("+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"))
+
+countries <- over(pointSP, w)
+countries <- with(countries, data.frame(sovereignt, admin, name_long, continent))
+artoLocs <- data.frame(artoLocs, countries)
+#ok, now we should look for weird stuff!
+weird <- artoLocs[artoLocs$continent %in% c("Europe", "North America"),]
+library(maps)
+world <- map_data("world")
+weirdmap <- ggplot() +
+   geom_polygon( data=world, aes(x=long, y=lat, group=group)) +
+   geom_point (data=weird, aes(x=LOClongitude, y=LOClatitude, colour="red"))
