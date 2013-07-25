@@ -35,8 +35,8 @@ distMap <- get_map(location=c(lon=mapCenter$lon, lat=mapCenter$lat), zoom=mapSiz
 printMap <- ggmap(distMap) +
 	geom_point(data=arto, aes(x=LOClongitude, y=LOClatitude, colour=series)) # might be nice to add some cities too
 printMap # i guess the default method is to print a plot.
-write.csv(arto, file="data/jarrett-specific.csv")
-
+#write.csv(arto, file="data/jarrett-specific.csv")
+arto <- read.csv("data/jarrett-specific.csv")
 
 #### let's try a somewhat more clever approach to geocoding ####
 # just countries
